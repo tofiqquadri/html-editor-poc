@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
-
+import { htmlTemplate as initialHtmlTemplate } from '@/template/html';
 export const CKEditor2 = () => {
-    const [htmlTemplate, setHtmlTemplate] = useState<string>(`
+    const [htmlTemplate, setHtmlTemplate] = useState<string>(
+        initialHtmlTemplate ||
+            `
     <style>
       .custom-box {
         background-color: #f5f5f5;
@@ -20,7 +22,8 @@ export const CKEditor2 = () => {
       <h2>Welcome to my template, Tofiq</h2>
       <p>This is a <span class="highlight">styled</span> HTML template.</p>
     </div>
-  `);
+  `
+    );
     const cloud = useCKEditorCloud({
         version: '44.3.0',
         premium: true

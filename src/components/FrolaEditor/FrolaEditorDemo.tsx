@@ -1,12 +1,12 @@
-import Head from 'next/head';
 import { useState, useEffect, useRef } from 'react';
 import 'froala-editor/css/froala_style.min.css';
 import 'froala-editor/css/froala_editor.pkgd.min.css';
 import FroalaEditorComponent from 'react-froala-wysiwyg';
+import { htmlTemplate as initialHtmlTemplate } from '@/template/html';
 
 export default function EditorPage() {
     // Input HTML and CSS separately
-    const [htmlContent, setHtmlContent] = useState('<p>Hello World!</p>');
+    const [htmlContent, setHtmlContent] = useState(initialHtmlTemplate || '<p>Hello World!</p>');
     const [cssContent, setCssContent] = useState('p { color: blue; }');
 
     // Output HTML and CSS
