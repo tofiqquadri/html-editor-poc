@@ -1,13 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
-import FroalaEditorComponent from 'react-froala-wysiwyg';
-import { htmlTemplate as initialHtmlTemplate } from '@/template/html';
+'use client';
 
-export default function EditorPage() {
+import { Editor } from '@tinymce/tinymce-react';
+import { useRef, useState, useEffect } from 'react';
+import { initialConfig, htmlValue, trialLicenseKey, viewOnlyConfig } from './data';
+
+export default function TinyDocs() {
+    const editorRef = useRef(null);
+    const editorViewRef = useRef(null);
+
+    const [mounted, setMounted] = useState(false);
+
     // Input HTML and CSS separately
-    const [htmlContent, setHtmlContent] = useState('<p>Hello World!</p>');
-    const [cssContent, setCssContent] = useState('p { color: blue; }');
+    const [htmlContent, setHtmlContent] = useState(htmlValue);
+    const [cssContent, setCssContent] = useState(initialConfig.content_style);
 
     // Output HTML and CSS
     const [outputHtml, setOutputHtml] = useState('');
@@ -16,72 +21,9 @@ export default function EditorPage() {
     const [viewMode, setViewMode] = useState('code'); // "code" or "visual"
     const previewRef = useRef(null);
 
-    // Froala editor configuration
-    const editorConfig = {
-        placeholderText: 'Edit Your HTML Content Here!',
-        toolbarButtons: {
-            moreText: {
-                buttons: [
-                    'bold',
-                    'italic',
-                    'underline',
-                    'strikeThrough',
-                    'subscript',
-                    'superscript',
-                    'fontFamily',
-                    'fontSize',
-                    'textColor',
-                    'backgroundColor',
-                    'inlineClass',
-                    'inlineStyle',
-                    'clearFormatting'
-                ]
-            },
-            moreParagraph: {
-                buttons: [
-                    'alignLeft',
-                    'alignCenter',
-                    'alignRight',
-                    'alignJustify',
-                    'formatOL',
-                    'formatUL',
-                    'paragraphFormat',
-                    'paragraphStyle',
-                    'lineHeight',
-                    'outdent',
-                    'indent',
-                    'quote'
-                ]
-            },
-            moreRich: {
-                buttons: [
-                    'insertLink',
-                    'insertImage',
-                    'insertVideo',
-                    'insertTable',
-                    'emoticons',
-                    'fontAwesome',
-                    'specialCharacters',
-                    'embedly',
-                    'insertFile',
-                    'insertHR'
-                ]
-            },
-            moreMisc: {
-                buttons: ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'spellChecker', 'selectAll', 'html', 'help'],
-                align: 'right',
-                buttonsVisible: 2
-            }
-        },
-        events: {
-            contentChanged: function () {
-                // Update HTML content when editor content changes
-                setHtmlContent(this.html.get());
-            }
-        },
-        htmlAllowedTags: ['.*'],
-        htmlAllowedAttrs: ['.*']
-    };
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Apply custom CSS to preview
     useEffect(() => {
@@ -110,6 +52,22 @@ export default function EditorPage() {
     const toggleViewMode = () => {
         setViewMode((prevMode) => (prevMode === 'code' ? 'visual' : 'code'));
     };
+
+    // Using useEffect to handle client-side initialization only
+    useEffect(() => {
+        setMounted(true);
+        getEditorContent();
+    }, []);
+
+    const getEditorContent = () => {
+        if (editorRef.current) {
+            const content = editorRef.current.getContent();
+            setHtmlContent(content);
+            console.log('Editor content:', content);
+        }
+    };
+
+    if (!mounted) return null;
 
     return (
         <div className="container mx-auto p-4">
@@ -140,7 +98,13 @@ export default function EditorPage() {
                                     />
                                 </div>
                             ) : (
-                                <FroalaEditorComponent tag="div" model={htmlContent} onModelChange={setHtmlContent} config={editorConfig} />
+                                <Editor
+                                    apiKey={trialLicenseKey}
+                                    onInit={(_evt, editor) => (editorRef.current = editor)}
+                                    initialValue={htmlValue}
+                                    init={{ ...initialConfig, content_style: cssContent }}
+                                    onEditorChange={setHtmlContent}
+                                />
                             )}
                         </div>
                     </div>
@@ -160,11 +124,14 @@ export default function EditorPage() {
                 {/* Preview Section */}
                 <div className="border rounded p-4 mb-4">
                     <h2 className="text-lg font-semibold mb-2">Live Preview</h2>
-                    <div
-                        ref={previewRef}
-                        className="preview-container p-4 border rounded bg-white"
-                        dangerouslySetInnerHTML={{ __html: htmlContent }}
-                    />
+                    <div ref={previewRef} className="preview-container p-4 border rounded bg-white">
+                        <Editor
+                            apiKey={trialLicenseKey}
+                            onInit={(_evt, editor) => (editorViewRef.current = editor)}
+                            initialValue={htmlContent}
+                            init={{ ...viewOnlyConfig, content_style: cssContent }}
+                        />
+                    </div>
                 </div>
 
                 <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">

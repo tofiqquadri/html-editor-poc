@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
     { label: 'CK Editor', href: '/ckeditor' },
-    { label: 'Frola Editor', href: '/frola' }
+    { label: 'Frola Editor', href: '/frola' },
+    { label: 'TinyDocs', href: '/tinydocs' },
 ];
 
 type Props = {};

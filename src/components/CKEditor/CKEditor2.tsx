@@ -3,8 +3,7 @@ import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 import { htmlTemplate as initialHtmlTemplate } from '@/template/html';
 export const CKEditor2 = () => {
     const [htmlTemplate, setHtmlTemplate] = useState<string>(
-        initialHtmlTemplate ||
-            `
+        `
     <style>
       .custom-box {
         background-color: #f5f5f5;

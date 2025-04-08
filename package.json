@@ -11,8 +11,10 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^44.3.0",
     "@ckeditor/ckeditor5-react": "^9.5.0",
+    "@tinymce/tinymce-react": "^6.1.0",
     "@types/ckeditor__ckeditor5-build-classic": "^37.0.4",
     "froala-editor": "^4.5.1",
+    "html-react-parser": "^5.2.3",
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
